@@ -1,0 +1,61 @@
+
+name: paper-bot
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: paper-bot
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run one pass
+        env:
+          ONE_PASS: "1"
+          TZ: "Europe/Brussels"
+        run: |
+          python paper_live.py | tee -a paper_log.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper-outputs
+          path: |
+            paper_log.txt
+            paper_equity.csv
+            paper_trades.csv
+            paper_state.json
+          retention-days: 30
+
+      - name: Commit state and logs back to repo
+        run: |
+          mkdir -p logs
+          cp -f paper_equity.csv logs/ || true
+          cp -f paper_trades.csv logs/ || true
+          cp -f paper_log.txt logs/ || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add logs/ paper_state.json || true
+          git commit -m "logs+state: $(date -u +'%Y-%m-%dT%H:%MZ')" || echo "no changes"
+          git push
