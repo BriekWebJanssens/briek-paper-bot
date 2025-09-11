@@ -1,4 +1,3 @@
-
 name: paper-bot
 
 on:
@@ -7,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       reset_state:
-        description: "Reset paper_state.json to seed"
+        description: "Reset paper_state.json naar seed"
         required: false
         default: "0"
 
@@ -21,6 +20,7 @@ jobs:
     concurrency:
       group: paper-bot
       cancel-in-progress: true
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +34,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
+
       - name: Show repo and state
         run: |
           pwd
@@ -48,18 +48,29 @@ jobs:
       - name: Ensure/Reset state
         env:
           EQUITY_SEED: "1000"
-          RESET_STATE: "${{ inputs.reset_state || '0' }}"
+          RESET_STATE: "${{ github.event.inputs.reset_state || '0' }}"
         run: |
           if [ "$RESET_STATE" = "1" ]; then
-          echo "Forcing state reset"
-          echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
-          rm -f paper_equity.csv paper_trades.csv || true
+            echo "Forcing state reset"
+            echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
+            rm -f paper_equity.csv paper_trades.csv || true
           elif [ ! -f paper_state.json ]; then
-          echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
-          echo "seeded state to ${EQUITY_SEED}"
+            echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
+            echo "Seeded state to ${EQUITY_SEED}"
           fi
           echo "STATE NOW:" && cat paper_state.json
 
+      - name: Precreate CSVs
+        run: |
+          [ -f paper_equity.csv ] || echo "time,equity,open_positions" > paper_equity.csv
+          [ -f paper_trades.csv ] || echo "time,symbol,side,price,qty,pnl,equity" > paper_trades.csv
+
+      - name: Show START_EQUITY from bot.py
+        run: |
+          python - << 'PY'
+          import bot
+          print("bot.START_EQUITY =", bot.START_EQUITY)
+          PY
 
       - name: Run one pass
         env:
@@ -67,6 +78,14 @@ jobs:
           TZ: "Europe/Brussels"
         run: |
           python paper_live.py | tee -a paper_log.txt
+
+      - name: Verify outputs
+        run: |
+          ls -la
+          head -n 5 paper_equity.csv || true
+          head -n 5 paper_trades.csv || true
+          test -s paper_log.txt || (echo "paper_log.txt missing/empty" && exit 1)
+          test -s paper_equity.csv || (echo "paper_equity.csv missing/empty" && exit 1)
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -90,10 +109,3 @@ jobs:
           git add logs/ paper_state.json || true
           git commit -m "logs+state: $(date -u +'%Y-%m-%dT%H:%MZ')" || echo "no changes"
           git push
-      - name: Show START_EQUITY from bot.py
-        run: |
-          python - << 'PY'
-          import bot
-          print("bot.START_EQUITY =", bot.START_EQUITY)
-          PY
-
