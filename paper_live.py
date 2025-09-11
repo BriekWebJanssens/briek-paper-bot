@@ -39,6 +39,9 @@ def load_state():
             open_pos = st.get('open_pos', {}) or {}
         except Exception as e:
             print(f"[state] load failed: {e}")
+print(f"TIMEFRAME={TIMEFRAME}")
+print(f"EQUITY_START={EQUITY}")
+print("state_exists=", os.path.exists("paper_state.json"))
 
 def save_state():
     try:
