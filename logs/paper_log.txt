@@ -1,2 +1,5 @@
 
+TIMEFRAME=4h
+EQUITY_START=1000.0
+state_exists= True
 Loaded 20 symbols from symbols.txt
