@@ -39,10 +39,7 @@ def load_state():
             open_pos = st.get('open_pos', {}) or {}
         except Exception as e:
             print(f"[state] load failed: {e}")
-print(f"TIMEFRAME={TIMEFRAME}")
-print(f"EQUITY_START={EQUITY}")
-print("state_exists=", os.path.exists("paper_state.json"))
-
+            
 def save_state():
     try:
         STATE_PATH.write_text(json.dumps({
@@ -56,7 +53,9 @@ def main():
     global EQUITY
     ONE_PASS = os.getenv("ONE_PASS", "0") == "1"
     load_state()
-
+    print(f"TIMEFRAME={TIMEFRAME}")
+    print(f"EQUITY_START={EQUITY}")
+    print("state_exists=", os.path.exists("paper_state.json"))
     syms = load_symbols()
     init_pair_spreads(syms)
     print("Paper start. Symbols:", syms)
