@@ -1,0 +1,44 @@
+Backtest window: 2025-06-16 -> 2025-06-30
+Loaded 20 symbols from symbols.txt
+Pairs: ['PROM/USDT', 'DIA/USDT', 'XTZ/USDT', 'BEAMX/USDT', 'TUT/USDT', 'BANANAS31/USDT', 'SUPER/USDT', 'YFI/USDT', 'CKB/USDT', 'BABY/USDT', 'HEI/USDT', 'BLUR/USDT', 'SIGN/USDT', 'KNC/USDT', 'ZEN/USDT', 'KAVA/USDT', 'TFUEL/USDT', 'PUNDIX/USDT', 'IOST/USDT', 'COS/USDT']
+PROM/USDT: 90 bars
+DIA/USDT: 90 bars
+XTZ/USDT: 90 bars
+BEAMX/USDT: 90 bars
+TUT/USDT: 90 bars
+BANANAS31/USDT: 90 bars
+SUPER/USDT: 90 bars
+YFI/USDT: 90 bars
+CKB/USDT: 90 bars
+BABY/USDT: 90 bars
+HEI/USDT: 90 bars
+BLUR/USDT: 90 bars
+SIGN/USDT: 90 bars
+KNC/USDT: 90 bars
+ZEN/USDT: 90 bars
+KAVA/USDT: 90 bars
+TFUEL/USDT: 90 bars
+PUNDIX/USDT: 90 bars
+IOST/USDT: 90 bars
+COS/USDT: 90 bars
+[2025-06-16] Dag-PnL: +0.00 EUR
+[2025-06-17] Dag-PnL: +0.00 EUR
+[2025-06-18] Dag-PnL: +0.00 EUR
+[2025-06-19] Dag-PnL: +0.00 EUR
+[2025-06-20] Dag-PnL: +0.00 EUR
+[2025-06-21] Dag-PnL: +0.00 EUR
+[2025-06-22] Dag-PnL: +0.00 EUR
+[2025-06-23] Dag-PnL: +0.00 EUR
+[2025-06-24] Dag-PnL: +0.00 EUR
+[2025-06-25] Dag-PnL: +0.00 EUR
+[2025-06-26] Dag-PnL: +0.00 EUR
+[2025-06-27] Dag-PnL: +0.00 EUR
+2025-06-28 18:00:00+02:00  SUPER/USDT   ENTRY px=0.642020 qty=15.622559  Fee=-0.01  Eq=199.99
+[2025-06-28] Dag-PnL: +0.00 EUR
+[2025-06-29] Dag-PnL: +0.00 EUR
+2025-06-30 22:00:00+02:00  SUPER/USDT   FORCE_EXIT px=0.647153 qty=15.622559  PnL=+0.07  Eq=200.06
+
+--- Samenvatting ---
+Trades: 1 entries
+Equity start: 200.00 -> end: 200.06 | Return: 0.03%
+Max drawdown: -0.00% | Profit factor: inf

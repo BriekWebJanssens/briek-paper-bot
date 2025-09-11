@@ -1,0 +1,64 @@
+Backtest window: 2025-07-01 -> 2025-07-31
+Loaded 20 symbols from symbols.txt
+Pairs: ['PROM/USDT', 'DIA/USDT', 'XTZ/USDT', 'BEAMX/USDT', 'TUT/USDT', 'BANANAS31/USDT', 'SUPER/USDT', 'YFI/USDT', 'CKB/USDT', 'BABY/USDT', 'HEI/USDT', 'BLUR/USDT', 'SIGN/USDT', 'KNC/USDT', 'ZEN/USDT', 'KAVA/USDT', 'TFUEL/USDT', 'PUNDIX/USDT', 'IOST/USDT', 'COS/USDT']
+PROM/USDT: 186 bars
+DIA/USDT: 186 bars
+XTZ/USDT: 186 bars
+BEAMX/USDT: 186 bars
+TUT/USDT: 186 bars
+BANANAS31/USDT: 186 bars
+SUPER/USDT: 186 bars
+YFI/USDT: 186 bars
+CKB/USDT: 186 bars
+BABY/USDT: 186 bars
+HEI/USDT: 186 bars
+BLUR/USDT: 186 bars
+SIGN/USDT: 186 bars
+KNC/USDT: 186 bars
+ZEN/USDT: 186 bars
+KAVA/USDT: 186 bars
+TFUEL/USDT: 186 bars
+PUNDIX/USDT: 186 bars
+IOST/USDT: 186 bars
+COS/USDT: 186 bars
+[2025-07-01] Dag-PnL: +0.00 EUR
+[2025-07-02] Dag-PnL: +0.00 EUR
+[2025-07-03] Dag-PnL: +0.00 EUR
+[2025-07-04] Dag-PnL: +0.00 EUR
+[2025-07-05] Dag-PnL: +0.00 EUR
+[2025-07-06] Dag-PnL: +0.00 EUR
+[2025-07-07] Dag-PnL: +0.00 EUR
+[2025-07-08] Dag-PnL: +0.00 EUR
+2025-07-09 18:00:00+02:00  ZEN/USDT     ENTRY px=7.753190 qty=1.293661  Fee=-0.01  Eq=199.99
+[2025-07-09] Dag-PnL: +0.00 EUR
+[2025-07-10] Dag-PnL: +0.00 EUR
+[2025-07-11] Dag-PnL: +0.00 EUR
+[2025-07-12] Dag-PnL: +0.00 EUR
+[2025-07-13] Dag-PnL: +0.00 EUR
+[2025-07-14] Dag-PnL: +0.00 EUR
+[2025-07-15] Dag-PnL: +0.00 EUR
+[2025-07-16] Dag-PnL: +0.00 EUR
+[2025-07-17] Dag-PnL: +0.00 EUR
+[2025-07-18] Dag-PnL: +0.00 EUR
+2025-07-19 18:00:00+02:00  ZEN/USDT     TIME_EXIT px=9.272100 qty=1.293661  PnL=+1.95  Eq=201.95
+[2025-07-19] Dag-PnL: +1.95 EUR
+[2025-07-20] Dag-PnL: +0.00 EUR
+[2025-07-21] Dag-PnL: +0.00 EUR
+[2025-07-22] Dag-PnL: +0.00 EUR
+2025-07-23 06:00:00+02:00  PUNDIX/USDT  ENTRY px=0.378833 qty=26.733614  Fee=-0.01  Eq=201.94
+[2025-07-23] Dag-PnL: +0.00 EUR
+2025-07-24 02:00:00+02:00  PUNDIX/USDT  EXIT  px=0.344862 qty=26.733614  PnL=-0.92  Eq=201.02
+[2025-07-24] Dag-PnL: -0.92 EUR
+[2025-07-25] Dag-PnL: +0.00 EUR
+[2025-07-26] Dag-PnL: +0.00 EUR
+[2025-07-27] Dag-PnL: +0.00 EUR
+[2025-07-28] Dag-PnL: +0.00 EUR
+[2025-07-29] Dag-PnL: +0.00 EUR
+[2025-07-30] Dag-PnL: +0.00 EUR
+
+--- Samenvatting ---
+Trades: 2 entries
+Equity start: 200.00 -> end: 201.02 | Return: 0.51%
+Max drawdown: -0.46% | Profit factor: 2.12
+CSV geschreven: trades.csv, daily_pnl.csv
+Laatst berekende dag [2025-07-24]: Dag-PnL -0.92 EUR

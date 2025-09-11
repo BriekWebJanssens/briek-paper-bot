@@ -1,0 +1,46 @@
+Backtest window: 2025-07-01 -> 2025-07-15
+Loaded 20 symbols from symbols.txt
+Pairs: ['PROM/USDT', 'DIA/USDT', 'XTZ/USDT', 'BEAMX/USDT', 'TUT/USDT', 'BANANAS31/USDT', 'SUPER/USDT', 'YFI/USDT', 'CKB/USDT', 'BABY/USDT', 'HEI/USDT', 'BLUR/USDT', 'SIGN/USDT', 'KNC/USDT', 'ZEN/USDT', 'KAVA/USDT', 'TFUEL/USDT', 'PUNDIX/USDT', 'IOST/USDT', 'COS/USDT']
+PROM/USDT: 90 bars
+DIA/USDT: 90 bars
+XTZ/USDT: 90 bars
+BEAMX/USDT: 90 bars
+TUT/USDT: 90 bars
+BANANAS31/USDT: 90 bars
+SUPER/USDT: 90 bars
+YFI/USDT: 90 bars
+CKB/USDT: 90 bars
+BABY/USDT: 90 bars
+HEI/USDT: 90 bars
+BLUR/USDT: 90 bars
+SIGN/USDT: 90 bars
+KNC/USDT: 90 bars
+ZEN/USDT: 90 bars
+KAVA/USDT: 90 bars
+TFUEL/USDT: 90 bars
+PUNDIX/USDT: 90 bars
+IOST/USDT: 90 bars
+COS/USDT: 90 bars
+[2025-07-01] Dag-PnL: +0.00 EUR
+[2025-07-02] Dag-PnL: +0.00 EUR
+[2025-07-03] Dag-PnL: +0.00 EUR
+[2025-07-04] Dag-PnL: +0.00 EUR
+[2025-07-05] Dag-PnL: +0.00 EUR
+[2025-07-06] Dag-PnL: +0.00 EUR
+[2025-07-07] Dag-PnL: +0.00 EUR
+[2025-07-08] Dag-PnL: +0.00 EUR
+2025-07-09 18:00:00+02:00  ZEN/USDT     ENTRY px=7.753190 qty=1.293661  Fee=-0.01  Eq=199.99
+[2025-07-09] Dag-PnL: +0.00 EUR
+[2025-07-10] Dag-PnL: +0.00 EUR
+[2025-07-11] Dag-PnL: +0.00 EUR
+[2025-07-12] Dag-PnL: +0.00 EUR
+[2025-07-13] Dag-PnL: +0.00 EUR
+[2025-07-14] Dag-PnL: +0.00 EUR
+2025-07-15 22:00:00+02:00  ZEN/USDT     FORCE_EXIT px=8.474500 qty=1.293661  PnL=+0.92  Eq=200.91
+
+--- Samenvatting ---
+Trades: 1 entries
+Equity start: 200.00 -> end: 200.91 | Return: 0.46%
+Max drawdown: -0.00% | Profit factor: inf
+CSV geschreven: trades.csv, daily_pnl.csv
+Laatst berekende dag [2025-07-15]: Dag-PnL +0.92 EUR
