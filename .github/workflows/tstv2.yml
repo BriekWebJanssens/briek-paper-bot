@@ -4,7 +4,12 @@ name: paper-bot
 on:
   schedule:
     - cron: "*/15 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      reset_state:
+        description: "Reset paper_state.json to seed"
+        required: false
+        default: "0"
 
 permissions:
   contents: write
@@ -40,14 +45,21 @@ jobs:
             echo "no state file"
           fi
 
-      - name: Ensure state exists (seed once)
+      - name: Ensure/Reset state
         env:
           EQUITY_SEED: "1000"
+          RESET_STATE: "${{ inputs.reset_state || '0' }}"
         run: |
-          if [ ! -f paper_state.json ]; then
-            echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
-            echo "seeded state to ${EQUITY_SEED}"
+          if [ "$RESET_STATE" = "1" ]; then
+          echo "Forcing state reset"
+          echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
+          rm -f paper_equity.csv paper_trades.csv || true
+          elif [ ! -f paper_state.json ]; then
+          echo "{\"equity\":${EQUITY_SEED},\"open_pos\":{}}" > paper_state.json
+          echo "seeded state to ${EQUITY_SEED}"
           fi
+          echo "STATE NOW:" && cat paper_state.json
+
 
       - name: Run one pass
         env:
@@ -78,3 +90,10 @@ jobs:
           git add logs/ paper_state.json || true
           git commit -m "logs+state: $(date -u +'%Y-%m-%dT%H:%MZ')" || echo "no changes"
           git push
+      - name: Show START_EQUITY from bot.py
+        run: |
+          python - << 'PY'
+          import bot
+          print("bot.START_EQUITY =", bot.START_EQUITY)
+          PY
+
