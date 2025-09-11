@@ -1,0 +1,36 @@
+﻿name: paper-bot
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: paper-bot
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run one pass
+        env:
+          ONE_PASS: "1"
+          TZ: "Europe/Brussels"
+        run: |
+          python paper_live.py | tee -a paper_log.txt
+      - name: Upload outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper-outputs
+          path: |
+            paper_log.txt
+            paper_equity.csv
+            paper_trades.csv
+          retention-days: 30
