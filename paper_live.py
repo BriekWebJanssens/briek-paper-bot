@@ -44,7 +44,7 @@ def main():
             print(f"  {s} warm-up FAILED: {e}")
 
     last_bar_time = {}
-    ONE_PASS = _os.getenv("ONE_PASS", "0") -eq "1"   # zet tijdelijk True: precies 1 cyclus draaien
+    ONE_PASS = _os.getenv("ONE_PASS", "0") == "1"
 
     loop_num = 0
     while True:
