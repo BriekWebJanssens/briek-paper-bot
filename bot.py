@@ -25,7 +25,7 @@ MAX_HOLD_BARS = 60          # ≈ 10 dagen op 4h
 START_DATE = os.getenv('START_DATE', '2025-03-26')
 END_DATE   = os.getenv('END_DATE',   '2025-07-31')
 
-START_EQUITY = 200.0
+START_EQUITY = 1000.0
 SYMBOLS_FILE = 'symbols.txt'
 
 # ----------------------------
