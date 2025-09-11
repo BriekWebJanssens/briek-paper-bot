@@ -1,5 +1,11 @@
-import os, time, math, pandas as pd, ccxt, datetime as dt, json, pathlib
-from bot import load_symbols, init_pair_spreads, add_indicators, apply_slip, position_size, min_notional, signal_row, TIMEFRAME, START_EQUITY, FEE, ATR_MULT, MAX_OPEN_POS, DAILY_DD_STOP
+# paper_live.py
+import os, time, math, json, pathlib, datetime as dt
+import pandas as pd, ccxt
+from bot import (
+    load_symbols, init_pair_spreads, add_indicators, apply_slip,
+    position_size, min_notional, signal_row,
+    TIMEFRAME, START_EQUITY, FEE, ATR_MULT, MAX_OPEN_POS, DAILY_DD_STOP
+)
 
 EXCHANGE = 'binance'
 ex = getattr(ccxt, EXCHANGE)({
@@ -10,25 +16,50 @@ ex = getattr(ccxt, EXCHANGE)({
 
 EQUITY = START_EQUITY
 open_pos = {}
-log_trades = 'paper_trades.csv'
-log_equity = 'paper_equity.csv'
+LOG_TRADES = 'paper_trades.csv'
+LOG_EQUITY = 'paper_equity.csv'
 STATE_PATH = pathlib.Path('paper_state.json')
+TZ = 'Europe/Brussels'
+
 
 def fetch_ohlcv(sym, since=None, limit=300):
     o = ex.fetch_ohlcv(sym, timeframe=TIMEFRAME, limit=limit, since=since)
-    df = pd.DataFrame(o, columns=['ts','o','h','l','c','v'])
+    df = pd.DataFrame(o, columns=['ts', 'o', 'h', 'l', 'c', 'v'])
     df['dt'] = pd.to_datetime(df['ts'], unit='ms', utc=True)
     df.set_index('dt', inplace=True)
-    df.index = df.index.tz_convert('Europe/Brussels')
-    return df[['o','h','l','c','v']].astype('float64')
+    df.index = df.index.tz_convert(TZ)
+    return df[['o', 'h', 'l', 'c', 'v']].astype('float64')
 
-def append_csv(path, rowdict):
+
+def append_csv(path, rowdict, header):
     import csv, os
     write_header = not os.path.exists(path)
     with open(path, 'a', newline='') as f:
-        w = csv.DictWriter(f, fieldnames=rowdict.keys())
-        if write_header: w.writeheader()
+        w = csv.DictWriter(f, fieldnames=header)
+        if write_header:
+            w.writeheader()
         w.writerow(rowdict)
+
+
+def log_equity_row(ts, equity, n_open):
+    append_csv(
+        LOG_EQUITY,
+        {'time': str(ts), 'equity': float(equity), 'open_positions': int(n_open)},
+        ['time', 'equity', 'open_positions']
+    )
+
+
+def log_trade_row(t, s, side, price, qty, pnl, equity):
+    append_csv(
+        LOG_TRADES,
+        {
+            'time': str(t), 'symbol': s, 'side': side,
+            'price': float(price), 'qty': float(qty),
+            'pnl': float(pnl), 'equity': float(equity)
+        },
+        ['time', 'symbol', 'side', 'price', 'qty', 'pnl', 'equity']
+    )
+
 
 def load_state():
     global EQUITY, open_pos
@@ -39,7 +70,8 @@ def load_state():
             open_pos = st.get('open_pos', {}) or {}
         except Exception as e:
             print(f"[state] load failed: {e}")
-            
+
+
 def save_state():
     try:
         STATE_PATH.write_text(json.dumps({
@@ -49,13 +81,25 @@ def save_state():
     except Exception as e:
         print(f"[state] save failed: {e}")
 
+
+def now_tz():
+    return dt.datetime.now(dt.timezone.utc).astimezone(dt.timezone(dt.timedelta(0))).astimezone()
+
+
 def main():
     global EQUITY
     ONE_PASS = os.getenv("ONE_PASS", "0") == "1"
+
     load_state()
     print(f"TIMEFRAME={TIMEFRAME}")
-    print(f"EQUITY_START={EQUITY}")
-    print("state_exists=", os.path.exists("paper_state.json"))
+    print(f"START_EQUITY_CODE={START_EQUITY}")
+    print(f"STATE_FILE_EQUITY={EQUITY}")
+    print(f"state_exists={STATE_PATH.exists()}")
+
+    # Log één initiële equity-rij zodat CSV altijd bestaat
+    start_loop = dt.datetime.now().astimezone()
+    log_equity_row(start_loop, EQUITY, len(open_pos))
+
     syms = load_symbols()
     init_pair_spreads(syms)
     print("Paper start. Symbols:", syms)
@@ -102,15 +146,11 @@ def main():
                     if exit_trend or price <= pos['stop']:
                         fill = apply_slip('sell', price, s)
                         gross = (fill - pos['entry']) * pos['qty']
-                        fees = (pos['entry']*pos['qty'] + fill*pos['qty']) * FEE
+                        fees = (pos['entry'] * pos['qty'] + fill * pos['qty']) * FEE
                         pnl = gross - fees
                         EQUITY += pnl
                         day_pnl_running += pnl
-                        append_csv(log_trades, {
-                            'time': str(t), 'symbol': s, 'side':'EXIT',
-                            'price': float(fill), 'qty': float(pos['qty']),
-                            'pnl': float(pnl), 'equity': float(EQUITY)
-                        })
+                        log_trade_row(t, s, 'EXIT', fill, pos['qty'], pnl, EQUITY)
                         del open_pos[s]
                         print(" EXIT")
                         continue
@@ -128,11 +168,7 @@ def main():
                             fees = cost * FEE
                             EQUITY -= fees
                             open_pos[s] = {'entry': fill, 'stop': stop, 'qty': qty, 'bars': 0}
-                            append_csv(log_trades, {
-                                'time': str(t), 'symbol': s, 'side':'ENTRY',
-                                'price': float(fill), 'qty': float(qty),
-                                'pnl': float(-fees), 'equity': float(EQUITY)
-                            })
+                            log_trade_row(t, s, 'ENTRY', fill, qty, -fees, EQUITY)
                             entered = True
                 print(" ENTRY" if entered else " ok")
 
@@ -141,13 +177,14 @@ def main():
             except Exception as e:
                 print(f" err: {e}")
 
-        append_csv(log_equity, {'time': str(start_loop), 'equity': float(EQUITY), 'open_positions': len(open_pos)})
+        log_equity_row(start_loop, EQUITY, len(open_pos))
         save_state()
         print(f"[{dt.datetime.now().astimezone():%H:%M:%S}] Loop #{loop_num} done. equity={EQUITY:.2f}, open={len(open_pos)}")
 
         if ONE_PASS:
             break
         time.sleep(900)
+
 
 if __name__ == "__main__":
     main()
