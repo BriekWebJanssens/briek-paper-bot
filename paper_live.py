@@ -1,23 +1,24 @@
-﻿import os, time, math, pandas as pd, ccxt, datetime as dt
+import os, time, math, pandas as pd, ccxt, datetime as dt, json, pathlib
 from bot import load_symbols, init_pair_spreads, add_indicators, apply_slip, position_size, min_notional, signal_row, TIMEFRAME, START_EQUITY, FEE, ATR_MULT, MAX_OPEN_POS, DAILY_DD_STOP
-EXCHANGE='binance'
+
+EXCHANGE = 'binance'
 ex = getattr(ccxt, EXCHANGE)({
     'enableRateLimit': True,
-    'timeout': 30000,                 # 30s
+    'timeout': 30000,
     'options': {'defaultType': 'spot'}
 })
-EQUITY = START_EQUITY  # paper saldo
-open_pos = {}          # sym -> dict(entry, stop, qty, bars)
+
+EQUITY = START_EQUITY
+open_pos = {}
 log_trades = 'paper_trades.csv'
 log_equity = 'paper_equity.csv'
+STATE_PATH = pathlib.Path('paper_state.json')
+
 def fetch_ohlcv(sym, since=None, limit=300):
     o = ex.fetch_ohlcv(sym, timeframe=TIMEFRAME, limit=limit, since=since)
     df = pd.DataFrame(o, columns=['ts','o','h','l','c','v'])
-    # 1) naar UTC datetimes
     df['dt'] = pd.to_datetime(df['ts'], unit='ms', utc=True)
-    # 2) index zetten
     df.set_index('dt', inplace=True)
-    # 3) tijdzone-conversie op de INDEX
     df.index = df.index.tz_convert('Europe/Brussels')
     return df[['o','h','l','c','v']].astype('float64')
 
@@ -28,13 +29,35 @@ def append_csv(path, rowdict):
         w = csv.DictWriter(f, fieldnames=rowdict.keys())
         if write_header: w.writeheader()
         w.writerow(rowdict)
+
+def load_state():
+    global EQUITY, open_pos
+    if STATE_PATH.exists():
+        try:
+            st = json.loads(STATE_PATH.read_text(encoding='utf-8'))
+            EQUITY = float(st.get('equity', START_EQUITY))
+            open_pos = st.get('open_pos', {}) or {}
+        except Exception as e:
+            print(f"[state] load failed: {e}")
+
+def save_state():
+    try:
+        STATE_PATH.write_text(json.dumps({
+            'equity': float(EQUITY),
+            'open_pos': open_pos
+        }, ensure_ascii=False), encoding='utf-8')
+    except Exception as e:
+        print(f"[state] save failed: {e}")
+
 def main():
     global EQUITY
+    ONE_PASS = os.getenv("ONE_PASS", "0") == "1"
+    load_state()
+
     syms = load_symbols()
     init_pair_spreads(syms)
     print("Paper start. Symbols:", syms)
 
-    # Warm-up: check 3 symbols zodat je meteen ziet dat IO werkt
     print("Warm-up fetch…")
     for s in syms[:3]:
         try:
@@ -44,9 +67,8 @@ def main():
             print(f"  {s} warm-up FAILED: {e}")
 
     last_bar_time = {}
-    ONE_PASS = _os.getenv("ONE_PASS", "0") == "1"
-
     loop_num = 0
+
     while True:
         loop_num += 1
         start_loop = dt.datetime.now().astimezone()
@@ -118,6 +140,7 @@ def main():
                 print(f" err: {e}")
 
         append_csv(log_equity, {'time': str(start_loop), 'equity': float(EQUITY), 'open_positions': len(open_pos)})
+        save_state()
         print(f"[{dt.datetime.now().astimezone():%H:%M:%S}] Loop #{loop_num} done. equity={EQUITY:.2f}, open={len(open_pos)}")
 
         if ONE_PASS:
@@ -126,5 +149,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-import os as _os
