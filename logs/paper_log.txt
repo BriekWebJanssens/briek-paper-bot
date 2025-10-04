@@ -4,3 +4,30 @@ START_EQUITY_CODE=1000.0
 STATE_FILE_EQUITY=996.9486098699142
 state_exists=True
 Loaded 20 symbols from symbols.txt
+Paper start. Symbols: ['PROM/USDT', 'DIA/USDT', 'XTZ/USDT', 'BEAMX/USDT', 'TUT/USDT', 'BANANAS31/USDT', 'SUPER/USDT', 'YFI/USDT', 'CKB/USDT', 'BABY/USDT', 'HEI/USDT', 'BLUR/USDT', 'SIGN/USDT', 'KNC/USDT', 'ZEN/USDT', 'KAVA/USDT', 'TFUEL/USDT', 'PUNDIX/USDT', 'IOST/USDT', 'COS/USDT']
+Warm-up fetch…
+  PROM/USDT ok, last bar: 2025-10-04 10:00:00+02:00
+  DIA/USDT ok, last bar: 2025-10-04 10:00:00+02:00
+  XTZ/USDT ok, last bar: 2025-10-04 10:00:00+02:00
+[2025-10-04 13:37:32] Start loop #1
+  [1/20] fetch PROM/USDT… ok
+  [2/20] fetch DIA/USDT… ok
+  [3/20] fetch XTZ/USDT… ok
+  [4/20] fetch BEAMX/USDT… ok
+  [5/20] fetch TUT/USDT… ok
+  [6/20] fetch BANANAS31/USDT… ok
+  [7/20] fetch SUPER/USDT… ok
+  [8/20] fetch YFI/USDT… ok
+  [9/20] fetch CKB/USDT… ok
+  [10/20] fetch BABY/USDT… ok
+  [11/20] fetch HEI/USDT… ok
+  [12/20] fetch BLUR/USDT… ok
+  [13/20] fetch SIGN/USDT… ok
+  [14/20] fetch KNC/USDT… ok
+  [15/20] fetch ZEN/USDT… ok
+  [16/20] fetch KAVA/USDT… ok
+  [17/20] fetch TFUEL/USDT… ok
+  [18/20] fetch PUNDIX/USDT… ok
+  [19/20] fetch IOST/USDT… ok
+  [20/20] fetch COS/USDT… ok
+[13:37:35] Loop #1 done. equity=996.95, open=0
